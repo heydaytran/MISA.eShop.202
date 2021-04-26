@@ -29,8 +29,7 @@
                   /> -->
                 </div>
                 <ModalEmtyWarning
-                  ref="ModalEmtyWarning_ref"
-                  v-show="!store.storeCode"
+                  v-if="!store.storeCode"
                   class="hidden"
                   :storeCodeValidate="storeCodeValidate"
                 />
@@ -343,7 +342,8 @@ export default {
     validateForm() {
       var res = this;
       var requiredInput = document.getElementsByClassName("required");
-      var validStoreCode;
+      var validStoreCode = true;
+
       for (let i = 0; i < requiredInput.length; i++) {
         if (requiredInput[i]._value === "") {
           requiredInput[i].classList.add("boderRed");
@@ -351,23 +351,25 @@ export default {
           continue;
         }
       }
+
       if (
         requiredInput[0]._value != "" &&
         requiredInput[1]._value != "" &&
         requiredInput[2]._value != ""
       ) {
-        validStoreCode = res.checkDuplicateCode(requiredInput[0]._value);
-        if (validStoreCode === false) {
+        res.validStoreCode = res.checkDuplicateCode(requiredInput[0]._value);
+        if (res.validStoreCode === false) {
           requiredInput[0].classList.add("boderRed");
           requiredInput[0].parentElement.nextSibling.classList.remove("hidden");
         }
         return validStoreCode;
-      } else return false;
+      } else return true;
     },
 
     // check trùng mã
     checkDuplicateCode(storeCode) {
       var res = this;
+
       axios
         .get("http://localhost:35480/api/v1/stores/getbycode", {
           params: {
@@ -375,35 +377,27 @@ export default {
           },
         })
         .then((respone) => {
-          let valid = true;
+
           if (respone.data.errorCode == 400) {
-            res.$refs.ModalEmtyWarning_ref.warningText =
-              "Mã cửa hàng đã bị trùng";
             if (this.formMode == "edit") {
-              if (respone.data.data.storeId != this.store.storeId) {
-                this.validate.storeCode = false;
-                this.warningMsg1 = "Mã cửa hàng đã tồn tại - sửa ";
-                this.storeCodeValidate = "Mã cửa hàng đã bị trùng";
-                valid = false;
+              if (respone.data.data.storeId != res.store.storeId) {
+                return false
               } else {
-                this.validate.storeCode = true;
-                valid = true;
+                return true
               }
             } else {
               alert("mã cửa hàng đã tồn tại");
-              this.storeCodeValidate = "Mã cửa hàng đã bị trùng";
-              valid = false;
+              return false
             }
-            valid = false;
           } else {
             alert("thêm thành công");
-            valid = true;
+            return true
           }
-          return valid;
         })
         .catch((error) => {
           console.log(error);
         });
+
     },
   },
   computed: {},
@@ -420,7 +414,7 @@ export default {
       optionWard: [{ text: "--xã/phường--", value: 0 }],
       selectedWard: 0,
       formTitle: "Thêm mới cửa hàng",
-      storeCodeValidate: "Trường này không được để trống",
+      storeCodeValidate: "",
     };
   },
 

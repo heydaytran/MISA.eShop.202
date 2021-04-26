@@ -31,16 +31,23 @@ export default {
       this.visible = false;
     },
     show: async function () {
-      this.visible = true;
-      
+      if(this.storeCodeValidate != "")
+      {
+        this.warningText = this.storeCodeValidate
+      }
     },
     showBubble(){
         this.visible1 = true
     },
     hideBubble(){
         this.visible1 = false
-    }
+    },
+
   },
+
+  updated(){
+    this.show()
+  }
 };
 </script>
 

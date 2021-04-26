@@ -193,7 +193,8 @@ export default {
       (this.store.countryId = shop.countryId),
       (this.store.wardId = shop.wardId),
       (this.store.provinceId = shop.provinceId),
-      (this.store.districtId = shop.districtId)
+      (this.store.districtId = shop.districtId),
+      (this.store.storeId = shop.storeId)
       );
 
       this.$refs.ShopModalCreate_ref.showEditDialog();
@@ -230,6 +231,7 @@ export default {
         provinceId: "",
         districtId: "",
         wardId: "",
+        storeId:""
       },
       formMode:'add'
     };
