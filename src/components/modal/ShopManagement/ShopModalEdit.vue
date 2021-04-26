@@ -29,7 +29,6 @@
                     color="red"
                   /> -->
                 </div>
-                <ModalEmtyWarning v-if="!store.storeCode" class="hidden" />
               </div>
               <div class="input-row">
                 <div class="ip-info-1">
@@ -47,7 +46,6 @@
                     @keyup="ValidateEmty('input_2')"
                   />
                 </div>
-                <ModalEmtyWarning v-if="!store.storeCode" class="hidden" />
                 <div class="input-row"></div>
               </div>
               <div class="input-row">
@@ -72,7 +70,6 @@
                     @keyup="ValidateEmty('input_3')"
                   ></textarea>
                 </div>
-                <ModalEmtyWarning class="hidden" />
                 <div class="input-row"></div>
               </div>
             </div>
@@ -153,10 +150,7 @@
                 <div class="ip-info-2">
                   <div class="b-input input-village">
                     <div class="label">Phường/Xã</div>
-                    <select
-                      class="m-input select-village"
-                      v-model="selectedWard"
-                    >
+                    <select class="m-input select-village" v-model="selectedWard" >
                       <option
                         :value="ward.value"
                         v-for="ward in optionWard"
@@ -202,174 +196,5 @@
   </div>
 </template>
 
-<script>
-import BaseModal from "../BaseModalForm.vue";
-import axios from "axios";
-import ModalEmtyWarning from "../ModalEmtyWarning.vue";
-
-export default {
-  components: {
-    BaseModal,
-    ModalEmtyWarning,
-  },
-  props: {
-    store: Object,
-  },
-
-  methods: {
-    // hiện dialog thêm
-     showAddDialog() {
-       this.$refs.BaseModal_ref.show()
-       setTimeout(() => {
-          document.getElementById("CustomerCode").focus()
-       }, 0);
-       this.getCounTryData()
-      this.selectedCountry = 0;
-    },
-
-    // hiện dialog sửa
-    showEditDialog: async function () {
-      this.$refs.BaseModal_ref.show();
-      this.optionDistrict = [];
-      this.optionCity = [];
-      this.optionWard = [];
-      await this.getCounTryData();
-      await (this.selectedCountry = this.store.countryId);
-      await this.getProvince();
-      await (this.selectedCity = this.store.provinceId);
-      await this.getDistrict();
-      await (this.selectedDistrict = this.store.districtId);
-      await this.getWard();
-      this.selectedWard = this.store.wardId;
-    },
-
-    // ẩn dialog
-    hide() {
-      this.$refs.BaseModal_ref.hide();
-    },
-
-    //lấy danh sách quốc gia
-    getCounTryData: async function () {
-      const response = await axios.get(
-        "http://localhost:35480/api/v1/Countrys"
-      );
-      var optionCountry = [];
-      optionCountry.push({ text: "--quốc gia--", value: 0 });
-      response.data.data.forEach(function (item) {
-        optionCountry.push({
-          text: item.countryName,
-          value: item.countryId,
-        });
-      });
-      this.optionCountry = optionCountry;
-    },
-
-    // lấy danh sách tỉnh theo quốc gia
-    getProvince: async function () {
-      const response = await axios.get(
-        "http://localhost:35480/api/v1/Provinces/WithCountry/" +
-          this.selectedCountry
-      );
-
-      var optionCity = [];
-      optionCity.push({ text: "--Tỉnh/Thành phố--", value: 0 });
-      response.data.data.forEach(function (item) {
-        optionCity.push({
-          text: item.provinceName,
-          value: item.provinceId,
-        });
-      });
-      this.optionCity = optionCity;
-    },
-
-    //lấy danh sách huyện theo tỉnh
-    getDistrict: async function () {
-      const response = await axios.get(
-        "http://localhost:35480/api/v1/Districts/WithProvince/" +
-          this.selectedCity
-      );
-
-      var optionDistrict = [];
-      optionDistrict.push({ text: "--Huyện/Quận--", value: 0 });
-      response.data.data.forEach(function (item) {
-        optionDistrict.push({
-          text: item.districtName,
-          value: item.districtId,
-        });
-      });
-      this.optionDistrict = optionDistrict;
-    },
-
-    //lấy danh sách phường xã theo huyện
-    getWard: async function () {
-      const response = await axios.get(
-        "http://localhost:35480/api/v1/Wards/WithDistrict/" +
-          this.selectedDistrict
-      );
-
-      var optionWard = [];
-      optionWard.push({ text: "--Phường/Xã--", value: 0 });
-      response.data.data.forEach(function (item) {
-        optionWard.push({
-          text: item.wardName,
-          value: item.wardId,
-        });
-      });
-      this.optionWard = optionWard;
-    },
-    ValidateEmty(input) {
-      var res = this.$refs[input];
-      if (res.value == "") {
-        res.classList.add("boderRed");
-        // var h = document.getElementById("hidden1");
-        // h.classList.remove("hidden");
-        res.parentElement.nextSibling.classList.remove("hidden");
-
-        // var phanTuCon = document.getElementById("hidden1");
-        // phanTuCon.parentNode.removeChild(phanTuCon);
-        //  this.$refs.ModalValidata_ref.show()
-      } else {
-        res.classList.remove("boderRed");
-        res.parentElement.nextSibling.classList.add("hidden");
-        //this.$refs.ModalValidata_ref.hide()
-      }
-    },
-  },
-  computed: {},
-
-  data() {
-    return {
-      selectedCountry: 0,
-
-      optionCountry: [{ text: "--quốc gia--", value: 0 }],
-      selectedCity: 0,
-      optionCity: [{ text: "--tỉnh/thành phố--", value: 0 }],
-      selectedDistrict: 0,
-      optionDistrict: [{ text: "--quận/huyện--", value: 0 }],
-      optionWard: [{ text: "--xã/phường--", value: 0 }],
-      selectedWard: 0,
-    };
-  },
-
-  watch: {
-    selectedCountry: async function () {
-      await this.getProvince();
-      this.selectedCity = 0;
-    },
-    selectedCity: async function () {
-      await this.getDistrict();
-      this.selectedDistrict = 0;
-    },
-    selectedDistrict: async function () {
-      await this.getWard();
-    },
-  },
-};
-</script>
 
 <style src="../../../style/common/_ShopModalCreate.scss" lang="scss" />
-<style scoped>
-.hidden {
-  display: none;
-}
-</style>

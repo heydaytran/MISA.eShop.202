@@ -238,7 +238,7 @@ export default {
 };
 </script>
 
-<style src="../../style/page/ShopManagement.scss" lang = "scss"/>
+<style src="../../style/page/ShopManagement.scss" lang="scss"/>
 
 <style scoped>
 </style>
