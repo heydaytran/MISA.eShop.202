@@ -13,10 +13,9 @@
 
 <script>
 export default {
-  // props: {
-  //   validate: Object,
-  //   color: Text
-  // },
+  props: {
+    storeCodeValidate:String
+  },
   //props: ["color", "validate"],
   data() {
     return {
@@ -33,17 +32,7 @@ export default {
     },
     show: async function () {
       this.visible = true;
-      // console.log("show call");
-      //  clearTimeout(this.debounce);
-      // this.debounce = setTimeout(() =>  {
-      //    setTimeout(
-      //   function () {
-      //     console.log("show 5s");
-      //     this.visible = false;
-      //   }.bind(this),
-      //   5000
-      // );
-      // }, 2000);
+      
     },
     showBubble(){
         this.visible1 = true

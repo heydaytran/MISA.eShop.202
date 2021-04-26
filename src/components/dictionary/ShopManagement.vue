@@ -163,7 +163,7 @@
       </div>
     </div>
 
-    <ShopModalCreate ref="ShopModalCreate_ref" :store="store" />
+    <ShopModalCreate ref="ShopModalCreate_ref" :store="store" :formMode="formMode" />
   </div>
 </template>
 
@@ -197,6 +197,7 @@ export default {
       );
 
       this.$refs.ShopModalCreate_ref.showEditDialog();
+      this.formMode = 'edit'
       // this.$refs.selectedCountry = this.store.countryId;
       // this.$refs.selectedCity = this.store.provinceId;
     },
@@ -212,7 +213,7 @@ export default {
 
     show() {
       this.$refs.ShopModalCreate_ref.showAddDialog();
-      
+      this.formMode = 'add'
       this.resetInput();
     },
   },
@@ -230,6 +231,7 @@ export default {
         districtId: "",
         wardId: "",
       },
+      formMode:'add'
     };
   },
   created() {

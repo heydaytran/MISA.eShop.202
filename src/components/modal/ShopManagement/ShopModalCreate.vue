@@ -3,7 +3,7 @@
     <div class="hello">
       <BaseModal ref="BaseModal_ref">
         <div class="header-dialog">
-          <div class="header-title">Thêm mới cửa hàng</div>
+          <div class="header-title">{{ formTitle }}</div>
           <div class="btn-close"></div>
         </div>
         <div class="body-dialog">
@@ -16,8 +16,7 @@
                     type="text"
                     id="CustomerCode"
                     fieldName="CustomerCode"
-                    class="m-input"
-                    required
+                    class="m-input required"
                     ref="input_1"
                     v-model="store.storeCode"
                     @blur="ValidateEmty('input_1')"
@@ -29,7 +28,12 @@
                     color="red"
                   /> -->
                 </div>
-                <ModalEmtyWarning v-if="!store.storeCode" class="hidden" />
+                <ModalEmtyWarning
+                  ref="ModalEmtyWarning_ref"
+                  v-show="!store.storeCode"
+                  class="hidden"
+                  :storeCodeValidate="storeCodeValidate"
+                />
               </div>
               <div class="input-row">
                 <div class="ip-info-1">
@@ -39,28 +43,26 @@
                     id="CustomerName"
                     fieldName="FullName"
                     name="Customer-name"
-                    class="m-input"
-                    required
+                    class="m-input required"
                     ref="input_2"
                     v-model="store.storeName"
                     @blur="ValidateEmty('input_2')"
                     @keyup="ValidateEmty('input_2')"
                   />
                 </div>
-                <ModalEmtyWarning v-if="!store.storeCode" class="hidden" />
+                <ModalEmtyWarning v-if="!store.storeName" class="hidden" />
                 <div class="input-row"></div>
               </div>
               <div class="input-row">
                 <div class="ip-info-1">
                   <div class="label lb-address">Địa chỉ <span>*</span></div>
                   <textarea
-                    class="area-address"
+                    class="area-address required"
                     aria-hidden="false"
                     aria-disabled="false"
                     aria-multiline="true"
                     role="textbox"
                     v-model="store.address"
-                    required
                     aria-invalid="false"
                     aria-readonly="false"
                     aria-describedby="MISATextAreaField-1221-ariaStatusEl"
@@ -72,7 +74,7 @@
                     @keyup="ValidateEmty('input_3')"
                   ></textarea>
                 </div>
-                <ModalEmtyWarning class="hidden" />
+                <ModalEmtyWarning v-if="!store.address" class="hidden" />
                 <div class="input-row"></div>
               </div>
             </div>
@@ -183,7 +185,7 @@
             </div>
           </div>
           <div class="rightchild">
-            <div class="d-button dbtn-save">
+            <div class="d-button dbtn-save" @click="validateForm">
               <div class="icon"></div>
               <div class="text-support">Lưu</div>
             </div>
@@ -214,22 +216,25 @@ export default {
   },
   props: {
     store: Object,
+    formMode: String,
   },
 
   methods: {
     // hiện dialog thêm
-     showAddDialog() {
-       this.$refs.BaseModal_ref.show()
-       setTimeout(() => {
-          document.getElementById("CustomerCode").focus()
-       }, 0);
-       this.getCounTryData()
+    showAddDialog() {
+      this.$refs.BaseModal_ref.show();
+      setTimeout(() => {
+        document.getElementById("CustomerCode").focus();
+      }, 0);
+      this.getCounTryData();
       this.selectedCountry = 0;
+      this.formTitle = "Thêm mới cửa hàng";
     },
 
     // hiện dialog sửa
     showEditDialog: async function () {
       this.$refs.BaseModal_ref.show();
+      this.formTitle = "Chỉnh sửa cửa hàng";
       this.optionDistrict = [];
       this.optionCity = [];
       this.optionWard = [];
@@ -334,6 +339,72 @@ export default {
         //this.$refs.ModalValidata_ref.hide()
       }
     },
+
+    validateForm() {
+      var res = this;
+      var requiredInput = document.getElementsByClassName("required");
+      var validStoreCode;
+      for (let i = 0; i < requiredInput.length; i++) {
+        if (requiredInput[i]._value === "") {
+          requiredInput[i].classList.add("boderRed");
+          requiredInput[i].parentElement.nextSibling.classList.remove("hidden");
+          continue;
+        }
+      }
+      if (
+        requiredInput[0]._value != "" &&
+        requiredInput[1]._value != "" &&
+        requiredInput[2]._value != ""
+      ) {
+        validStoreCode = res.checkDuplicateCode(requiredInput[0]._value);
+        if (validStoreCode === false) {
+          requiredInput[0].classList.add("boderRed");
+          requiredInput[0].parentElement.nextSibling.classList.remove("hidden");
+        }
+        return validStoreCode;
+      } else return false;
+    },
+
+    // check trùng mã
+    checkDuplicateCode(storeCode) {
+      var res = this;
+      axios
+        .get("http://localhost:35480/api/v1/stores/getbycode", {
+          params: {
+            storeCode: storeCode,
+          },
+        })
+        .then((respone) => {
+          let valid = true;
+          if (respone.data.errorCode == 400) {
+            res.$refs.ModalEmtyWarning_ref.warningText =
+              "Mã cửa hàng đã bị trùng";
+            if (this.formMode == "edit") {
+              if (respone.data.data.storeId != this.store.storeId) {
+                this.validate.storeCode = false;
+                this.warningMsg1 = "Mã cửa hàng đã tồn tại - sửa ";
+                this.storeCodeValidate = "Mã cửa hàng đã bị trùng";
+                valid = false;
+              } else {
+                this.validate.storeCode = true;
+                valid = true;
+              }
+            } else {
+              alert("mã cửa hàng đã tồn tại");
+              this.storeCodeValidate = "Mã cửa hàng đã bị trùng";
+              valid = false;
+            }
+            valid = false;
+          } else {
+            alert("thêm thành công");
+            valid = true;
+          }
+          return valid;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
   computed: {},
 
@@ -348,6 +419,8 @@ export default {
       optionDistrict: [{ text: "--quận/huyện--", value: 0 }],
       optionWard: [{ text: "--xã/phường--", value: 0 }],
       selectedWard: 0,
+      formTitle: "Thêm mới cửa hàng",
+      storeCodeValidate: "Trường này không được để trống",
     };
   },
 
