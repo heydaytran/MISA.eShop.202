@@ -91,7 +91,7 @@
                   </div>
                   <div class="b-input input-tax">
                     <div class="label">Mã số thuế</div>
-                    <select class="m-input text-tax">
+                    <select class="m-input text-tax" v-model="store.storeTaxCode">
                       <option>{{ store.storeTaxCode }}</option>
                     </select>
                   </div>
@@ -104,6 +104,7 @@
                     <select
                       class="m-input select-country"
                       v-model="selectedCountry"
+                      
                     >
                       <option
                         v-for="option in optionCountry"
@@ -184,7 +185,7 @@
             </div>
           </div>
           <div class="rightchild">
-            <div class="d-button dbtn-save" @click="validateForm">
+            <div class="d-button dbtn-save" @click="save">
               <div class="icon"></div>
               <div class="text-support">Lưu</div>
             </div>
@@ -219,15 +220,28 @@ export default {
   },
 
   methods: {
+
+
     // hiện dialog thêm
     showAddDialog() {
       this.$refs.BaseModal_ref.show();
+      this.resetInput()
       setTimeout(() => {
         document.getElementById("CustomerCode").focus();
       }, 0);
       this.getCounTryData();
       this.selectedCountry = 0;
       this.formTitle = "Thêm mới cửa hàng";
+    },
+
+    
+    // reset lại input trong modal
+    resetInput() {
+      (this.store.storeCode = ""),
+        (this.store.storeName = ""),
+        (this.store.address = ""),
+        (this.store.phoneNumber = ""),
+        (this.store.storeTaxCode = "")
     },
 
     // hiện dialog sửa
@@ -334,13 +348,62 @@ export default {
         //  this.$refs.ModalValidata_ref.show()
       } else {
         res.classList.remove("boderRed");
-        res.parentElement.nextSibling.classList.add("hidden");
+        //res.parentElement.nextSibling.classList.add("hidden");
         //this.$refs.ModalValidata_ref.hide()
       }
     },
 
+    // lưu bản ghi
+    // text = addMore -> lưu và thêm mới
+    // text = addOne -> lưu
+    async save(text) {
+      console.log(text)
+      var a
+         a = this.validateForm()
+      var res = this
+      console.log(res.formMode)
+       switch (res.formMode) {
+        case "add": 
+          {
+            console.log(a)
+            if(a == false)
+            {
+              alert("Vui lòng kiểm tra lại các trường đã nhập")
+            }
+            else
+            {
+              alert("vô đây")
+              console.log(res.store)
+              if (res.selectedCountry != 0) res.store.countryId = res.selectedCountry
+              if (res.selectedCity != 0) res.store.provinceId = res.selectedCity
+              if (res.selectedDistrict != 0) res.store.districtId = res.selectedDistrict
+              if (res.selectedWard != 0) res.store.wardId = res.selectedWard
+              await axios
+              .post("http://localhost:35480/api/v1/stores/", res.store)
+              .then((respone) =>{
+                console.log(text)
+                if(text =="addOne")
+                {
+                  res.hide()
+                  alert("đã thêm 1 bản ghi")
+                  console.log("dữ liệu được thêm:" + respone.data)
+                }else{
+                  res.showAddDialog()
+                }
+                alert("Thêm mới thành công")
+              })
+              .catch((err)=>{
+                console.log(err.response.data)
+                alert("Thêm mới thất bại")
+              })
+            }
+          }
+      }
+    },
+
+    // validate toàn bộ form khi lưu
     validateForm() {
-      var res = this;
+      //var res = this;
       var requiredInput = document.getElementsByClassName("required");
       var validStoreCode = true;
 
@@ -348,28 +411,32 @@ export default {
         if (requiredInput[i]._value === "") {
           requiredInput[i].classList.add("boderRed");
           requiredInput[i].parentElement.nextSibling.classList.remove("hidden");
-          continue;
+          validStoreCode = false;
         }
       }
+        return validStoreCode
 
-      if (
-        requiredInput[0]._value != "" &&
-        requiredInput[1]._value != "" &&
-        requiredInput[2]._value != ""
-      ) {
-        res.validStoreCode = res.checkDuplicateCode(requiredInput[0]._value);
-        if (res.validStoreCode === false) {
-          requiredInput[0].classList.add("boderRed");
-          requiredInput[0].parentElement.nextSibling.classList.remove("hidden");
-        }
-        return validStoreCode;
-      } else return true;
+
+     // nếu các trường bắt buộc nhập không trống -> check trùng mã
+      // if (
+      //   requiredInput[0]._value != "" &&
+      //   requiredInput[1]._value != "" &&
+      //   requiredInput[2]._value != ""
+      // ) {
+      //   res.validStoreCode = res.checkDuplicateCode(requiredInput[0]._value);
+      //   if (res.validStoreCode === false) {
+      //     requiredInput[0].classList.add("boderRed");
+      //     requiredInput[0].parentElement.nextSibling.classList.remove("hidden");
+      //   }
+      //   return validStoreCode;
+      // } else return true;
     },
 
     // check trùng mã
-    checkDuplicateCode(storeCode) {
+    async checkDuplicateCode(storeCode) {
       var res = this;
-
+      
+      await
       axios
         .get("http://localhost:35480/api/v1/stores/getbycode", {
           params: {
@@ -377,27 +444,25 @@ export default {
           },
         })
         .then((respone) => {
-
           if (respone.data.errorCode == 400) {
-            if (this.formMode == "edit") {
+            if (res.formMode == "edit") {
               if (respone.data.data.storeId != res.store.storeId) {
-                return false
+                return false;
               } else {
-                return true
+                return true;
               }
             } else {
               alert("mã cửa hàng đã tồn tại");
-              return false
+              return false;
             }
           } else {
             alert("thêm thành công");
-            return true
+            return true;
           }
         })
         .catch((error) => {
           console.log(error);
         });
-
     },
   },
   computed: {},

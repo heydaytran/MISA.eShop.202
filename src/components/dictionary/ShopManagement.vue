@@ -204,34 +204,33 @@ export default {
     },
 
     // reset lại input trong modal
-    resetInput() {
-      (this.store.storeCode = ""),
-        (this.store.storeName = ""),
-        (this.store.address = ""),
-        (this.store.phoneNumber = ""),
-        (this.store.storeTaxCode = "")
-    },
+
 
     show() {
       this.$refs.ShopModalCreate_ref.showAddDialog();
       this.formMode = 'add'
-      this.resetInput();
+  
     },
   },
   data() {
     return {
       stores: [],
       store: {
+         storeCode: "",
         storeName: "",
-        storeTaxCode: "",
-        phoneNumber: "",
         address: "",
-        storeCode: "",
-        countryId: "",
-        provinceId: "",
-        districtId: "",
-        wardId: "",
-        storeId:""
+        phoneNumber: "", 
+        storeTaxCode: "",
+        countryId: null,
+        provinceId: null,
+        districtId: null,
+        wardId: null,
+        status: 0,
+        street: "",
+        createDate: new Date(),
+        createUserId: "149fb958744f70c67709bf1378b8dc91",
+
+
       },
       formMode:'add'
     };
