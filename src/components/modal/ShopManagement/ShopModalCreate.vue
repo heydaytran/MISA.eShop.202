@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="hello">
-      <BaseModal ref="BaseModal_ref">
+    <BaseModal ref="BaseModal_ref">
+      <div class="dialog-Customer">
         <div class="header-dialog">
           <div class="header-title">{{ formTitle }}</div>
           <div class="btn-close"></div>
@@ -91,7 +91,10 @@
                   </div>
                   <div class="b-input input-tax">
                     <div class="label">Mã số thuế</div>
-                    <select class="m-input text-tax" v-model="store.storeTaxCode">
+                    <select
+                      class="m-input text-tax"
+                      v-model="store.storeTaxCode"
+                    >
                       <option>{{ store.storeTaxCode }}</option>
                     </select>
                   </div>
@@ -104,7 +107,6 @@
                     <select
                       class="m-input select-country"
                       v-model="selectedCountry"
-                      
                     >
                       <option
                         v-for="option in optionCountry"
@@ -127,8 +129,8 @@
                     >
                       <option
                         :value="city.value"
-                        v-for="city in optionCity"
-                        :key="city.value"
+                        v-for="(city, index) in optionCity"
+                        :key="index"
                       >
                         {{ city.text }}
                       </option>
@@ -185,11 +187,11 @@
             </div>
           </div>
           <div class="rightchild">
-            <div class="d-button dbtn-save" @click="save">
+            <div class="d-button dbtn-save" @click="save('addOne')">
               <div class="icon"></div>
               <div class="text-support">Lưu</div>
             </div>
-            <div class="d-button dbtn-get">
+            <div class="d-button dbtn-get" @click="save('addMore')">
               <div class="icon"></div>
               <div class="text-support">Lưu và thêm mới</div>
             </div>
@@ -199,8 +201,8 @@
             </div>
           </div>
         </div>
-      </BaseModal>
-    </div>
+      </div>
+    </BaseModal>
   </div>
 </template>
 
@@ -214,51 +216,84 @@ export default {
     BaseModal,
     ModalEmtyWarning,
   },
-  props: {
-    store: Object,
-    formMode: String,
-  },
+  props: ["store","formMode"],
+
 
   methods: {
-
-
-    // hiện dialog thêm
-    showAddDialog() {
-      this.$refs.BaseModal_ref.show();
-      this.resetInput()
-      setTimeout(() => {
-        document.getElementById("CustomerCode").focus();
-      }, 0);
-      this.getCounTryData();
-      this.selectedCountry = 0;
-      this.formTitle = "Thêm mới cửa hàng";
-    },
-
-    
     // reset lại input trong modal
     resetInput() {
+      this.selectedCountry = null;
+
+      this.optionDistrict = [];
+      this.optionDistrict.push({ text: "--Huyện--", value: null });
+
+      this.optionCity = [];
+      this.optionCity.push({ text: "--Thành Phố--", value: null });
+
+      this.optionWard = [];
+      this.optionWard.push({ text: "--Xã--", value: null });
+
       (this.store.storeCode = ""),
         (this.store.storeName = ""),
         (this.store.address = ""),
         (this.store.phoneNumber = ""),
-        (this.store.storeTaxCode = "")
+        (this.store.storeTaxCode = ""),
+        (this.selectedCountry = null),
+        (this.selectedDistrict = null),
+        (this.selectedWard = null),
+        (this.selectedCity = null);
+    },
+
+    // hiện dialog thêm
+    showAddDialog() {
+      this.$refs.BaseModal_ref.show();
+      this.resetInput();
+      setTimeout(() => {
+        document.getElementById("CustomerCode").focus();
+      }, 0);
+      this.getCounTryData();
+      this.formTitle = "Thêm mới cửa hàng";
     },
 
     // hiện dialog sửa
-    showEditDialog: async function () {
-      this.$refs.BaseModal_ref.show();
+    showEditDialog: async function (value) {
       this.formTitle = "Chỉnh sửa cửa hàng";
-      this.optionDistrict = [];
-      this.optionCity = [];
-      this.optionWard = [];
-      await this.getCounTryData();
-      await (this.selectedCountry = this.store.countryId);
-      await this.getProvince();
-      await (this.selectedCity = this.store.provinceId);
-      await this.getDistrict();
-      await (this.selectedDistrict = this.store.districtId);
-      await this.getWard();
-      this.selectedWard = this.store.wardId;
+      // debugger; // eslint-disable-line
+      // this.$refs.BaseModal_ref.show();
+      var res = this;
+      
+      // console.log(res.selectedCity, "a");
+      res.getCounTryData();
+      res.selectedCountry = value.countryId;
+      
+      setTimeout(() => {
+      res.selectedCity = res.store.provinceId
+        
+      }, 1000);
+      //res.getProvince(value.provinceId);
+      //console.log( res.selectedCity,"city");
+
+
+      //  await this.getProvince()
+      //  .then( res.selectedCity = res.store.provinceId)
+      //  .then(this.$refs.BaseModal_ref.show())
+
+      // if (this.selectedCountry != null) {
+      //   await this.getProvince();
+      //   res.selectedCity = res.store.provinceId;
+      //   if (this.selectedCity != null) {
+      //     await this.getDistrict();
+      //     res.selectedDistrict = res.store.districtId;
+      //     if (this.selectedDistrict != null) {
+      //       await this.getWard();
+      //       res.selectedWard = res.store.wardId;
+      //     }
+      //   }
+      // }
+      setTimeout(() => {
+        this.$refs.BaseModal_ref.show();
+        // console.log(res.selectedCity);
+      }, 0);
     },
 
     // ẩn dialog
@@ -272,7 +307,7 @@ export default {
         "http://localhost:35480/api/v1/Countrys"
       );
       var optionCountry = [];
-      optionCountry.push({ text: "--quốc gia--", value: 0 });
+      optionCountry.push({ text: "--quốc gia--", value: null });
       response.data.data.forEach(function (item) {
         optionCountry.push({
           text: item.countryName,
@@ -283,14 +318,15 @@ export default {
     },
 
     // lấy danh sách tỉnh theo quốc gia
-    getProvince: async function () {
+    getProvince: async function (value) {
       const response = await axios.get(
         "http://localhost:35480/api/v1/Provinces/WithCountry/" +
           this.selectedCountry
       );
+       console.log(response,"city2");
 
       var optionCity = [];
-      optionCity.push({ text: "--Tỉnh/Thành phố--", value: 0 });
+      optionCity.push({ text: "--Tỉnh/Thành phố--", value: null });
       response.data.data.forEach(function (item) {
         optionCity.push({
           text: item.provinceName,
@@ -298,6 +334,8 @@ export default {
         });
       });
       this.optionCity = optionCity;
+      this.selectedCity = value;
+      console.log(value);
     },
 
     //lấy danh sách huyện theo tỉnh
@@ -308,7 +346,8 @@ export default {
       );
 
       var optionDistrict = [];
-      optionDistrict.push({ text: "--Huyện/Quận--", value: 0 });
+      optionDistrict.push({ text: "--Huyện/Quận--", value: null });
+      console.log(optionDistrict);
       response.data.data.forEach(function (item) {
         optionDistrict.push({
           text: item.districtName,
@@ -326,7 +365,7 @@ export default {
       );
 
       var optionWard = [];
-      optionWard.push({ text: "--Phường/Xã--", value: 0 });
+      optionWard.push({ text: "--Phường/Xã--", value: null });
       response.data.data.forEach(function (item) {
         optionWard.push({
           text: item.wardName,
@@ -357,47 +396,46 @@ export default {
     // text = addMore -> lưu và thêm mới
     // text = addOne -> lưu
     async save(text) {
-      console.log(text)
-      var a
-         a = this.validateForm()
-      var res = this
-      console.log(res.formMode)
-       switch (res.formMode) {
-        case "add": 
-          {
-            console.log(a)
-            if(a == false)
-            {
-              alert("Vui lòng kiểm tra lại các trường đã nhập")
-            }
-            else
-            {
-              alert("vô đây")
-              console.log(res.store)
-              if (res.selectedCountry != 0) res.store.countryId = res.selectedCountry
-              if (res.selectedCity != 0) res.store.provinceId = res.selectedCity
-              if (res.selectedDistrict != 0) res.store.districtId = res.selectedDistrict
-              if (res.selectedWard != 0) res.store.wardId = res.selectedWard
-              await axios
+      console.log(text);
+      var a;
+      a = await this.validateForm();
+      var res = this;
+      console.log(res.formMode);
+      switch (res.formMode) {
+        case "add": {
+          console.log(a);
+          if (a == false) {
+            alert("Vui lòng kiểm tra lại các trường đã nhập");
+          } else {
+            console.log("thêm đối tượng sau: " + res.store);
+
+            res.store.countryId = res.selectedCountry;
+            res.store.provinceId = res.selectedCity;
+            res.store.districtId = res.selectedDistrict;
+            res.store.wardId = res.selectedWard;
+
+            await axios
               .post("http://localhost:35480/api/v1/stores/", res.store)
-              .then((respone) =>{
-                console.log(text)
-                if(text =="addOne")
-                {
-                  res.hide()
-                  alert("đã thêm 1 bản ghi")
-                  console.log("dữ liệu được thêm:" + respone.data)
-                }else{
-                  res.showAddDialog()
+              .then((respone) => {
+                if (text == "addOne") {
+                  alert(respone.data.userMsg);
+                  if (respone.data.errorCode != 400) {
+                    res.hide();
+                  }
+                } else {
+                  res.showAddDialog();
                 }
-                alert("Thêm mới thành công")
               })
-              .catch((err)=>{
-                console.log(err.response.data)
-                alert("Thêm mới thất bại")
-              })
-            }
+              .catch((err) => {
+                console.log(err.response.data);
+                alert("Thêm mới thất bại");
+              });
           }
+          break;
+        }
+        case "edit": {
+          alert("chưa thực hiện");
+        }
       }
     },
 
@@ -414,10 +452,9 @@ export default {
           validStoreCode = false;
         }
       }
-        return validStoreCode
+      return validStoreCode;
 
-
-     // nếu các trường bắt buộc nhập không trống -> check trùng mã
+      // nếu các trường bắt buộc nhập không trống -> check trùng mã
       // if (
       //   requiredInput[0]._value != "" &&
       //   requiredInput[1]._value != "" &&
@@ -435,9 +472,8 @@ export default {
     // check trùng mã
     async checkDuplicateCode(storeCode) {
       var res = this;
-      
-      await
-      axios
+
+      await axios
         .get("http://localhost:35480/api/v1/stores/getbycode", {
           params: {
             storeCode: storeCode,
@@ -469,15 +505,14 @@ export default {
 
   data() {
     return {
-      selectedCountry: 0,
-
-      optionCountry: [{ text: "--quốc gia--", value: 0 }],
-      selectedCity: 0,
-      optionCity: [{ text: "--tỉnh/thành phố--", value: 0 }],
-      selectedDistrict: 0,
-      optionDistrict: [{ text: "--quận/huyện--", value: 0 }],
-      optionWard: [{ text: "--xã/phường--", value: 0 }],
-      selectedWard: 0,
+      selectedCountry: null,
+      optionCountry: [{ text: "--quốc gia--", value: null }],
+      selectedCity: null,
+      optionCity: [{ text: "--tỉnh/thành phố--", value: null }],
+      selectedDistrict: null,
+      optionDistrict: [{ text: "--quận/huyện--", value: null }],
+      optionWard: [{ text: "--xã/phường--", value: null }],
+      selectedWard: null,
       formTitle: "Thêm mới cửa hàng",
       storeCodeValidate: "",
     };
@@ -486,14 +521,15 @@ export default {
   watch: {
     selectedCountry: async function () {
       await this.getProvince();
-      this.selectedCity = 0;
+      //this.selectedCity = null;
     },
     selectedCity: async function () {
       await this.getDistrict();
-      this.selectedDistrict = 0;
+      this.selectedDistrict = null;
     },
     selectedDistrict: async function () {
       await this.getWard();
+      this.selectedWard = null;
     },
   },
 };

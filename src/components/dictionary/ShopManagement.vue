@@ -164,40 +164,49 @@
     </div>
 
     <ShopModalCreate ref="ShopModalCreate_ref" :store="store" :formMode="formMode" />
+    <ShopModalDelete ref="ShopModalDelete_ref" />
   </div>
 </template>
 
 <script>
 import ShopModalCreate from "../modal/ShopManagement/ShopModalCreate.vue";
+import ShopModalDelete from "../modal/ShopManagement/ShopModalDelete.vue"
 import axios from "axios";
 
 export default {
   components: {
     ShopModalCreate,
+    ShopModalDelete
   },
   methods: {
     // lấy dữ liệu các bản ghi shop
-    getdata() {
-      axios.get("http://localhost:35480/api/v1/Stores").then((Response) => {
+   async getdata() {
+    await axios.get("http://localhost:35480/api/v1/Stores").then((Response) => {
         this.stores = Response.data.data;
       });
     },
 
     // hiển thị chi tiết bản ghi trên modal
     showDetail: async function (shop) {
-      await ((this.store.storeCode = shop.storeCode),
-      (this.store.storeName = shop.storeName),
-      (this.store.address = shop.address),
-      (this.store.phoneNumber = shop.phoneNumber),
-      (this.store.storeTaxCode = shop.storeTaxCode),
-      (this.store.countryId = shop.countryId),
-      (this.store.wardId = shop.wardId),
-      (this.store.provinceId = shop.provinceId),
-      (this.store.districtId = shop.districtId),
-      (this.store.storeId = shop.storeId)
-      );
 
-      this.$refs.ShopModalCreate_ref.showEditDialog();
+      this.store = shop;
+       console.log(this.store,"a");
+      // await (
+      //   (this.store.storeCode = shop.storeCode),
+      //  (this.store.storeName = shop.storeName),
+      // (this.store.address = shop.address),
+      // (this.store.phoneNumber = shop.phoneNumber),
+      // (this.store.storeTaxCode = shop.storeTaxCode),
+      // (this.store.countryId = shop.countryId),
+      // (this.store.wardId = shop.wardId),
+      // (this.store.provinceId = shop.provinceId),
+      // (this.store.districtId = shop.districtId),
+      // (this.store.storeId = shop.storeId)
+      // )
+      this.$refs.ShopModalCreate_ref.showEditDialog(this.store)
+
+
+     
       this.formMode = 'edit'
       // this.$refs.selectedCountry = this.store.countryId;
       // this.$refs.selectedCity = this.store.provinceId;
