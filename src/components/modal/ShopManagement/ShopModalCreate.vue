@@ -269,7 +269,7 @@ export default {
       setTimeout(() => {
       res.selectedCity = res.store.provinceId
         
-      }, 1000);
+      }, 150);
       //res.getProvince(value.provinceId);
       //console.log( res.selectedCity,"city");
 
