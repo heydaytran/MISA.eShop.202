@@ -244,7 +244,6 @@ export default {
       await this.getDistrict();
       await (this.selectedDistrict = this.store.districtId);
       await this.getWard();
-      
       this.selectedWard = this.store.wardId;
     },
 
