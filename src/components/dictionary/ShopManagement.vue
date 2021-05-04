@@ -189,21 +189,21 @@ export default {
     // hiển thị chi tiết bản ghi trên modal
     showDetail: async function (shop) {
 
-      this.store = shop;
+     // this.store = shop;
        console.log(this.store,"a");
-      // await (
-      //   (this.store.storeCode = shop.storeCode),
-      //  (this.store.storeName = shop.storeName),
-      // (this.store.address = shop.address),
-      // (this.store.phoneNumber = shop.phoneNumber),
-      // (this.store.storeTaxCode = shop.storeTaxCode),
-      // (this.store.countryId = shop.countryId),
-      // (this.store.wardId = shop.wardId),
-      // (this.store.provinceId = shop.provinceId),
-      // (this.store.districtId = shop.districtId),
-      // (this.store.storeId = shop.storeId)
-      // )
-      this.$refs.ShopModalCreate_ref.showEditDialog(this.store)
+      await (
+        (this.store.storeCode = shop.storeCode),
+       (this.store.storeName = shop.storeName),
+      (this.store.address = shop.address),
+      (this.store.phoneNumber = shop.phoneNumber),
+      (this.store.storeTaxCode = shop.storeTaxCode),
+      (this.store.countryId = shop.countryId),
+      (this.store.wardId = shop.wardId),
+      (this.store.provinceId = shop.provinceId),
+      (this.store.districtId = shop.districtId),
+      (this.store.storeId = shop.storeId)
+      )
+      this.$refs.ShopModalCreate_ref.showEditDialog()
 
 
      

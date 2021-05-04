@@ -22,23 +22,30 @@ export default {
       visible: false,
       debounce: null,
       visible1:false,
-      warningText: "Trường này không được phép để trống",
+      warningText: "Trường này không được bỏ trống",
     };
   },
 
   methods: {
-    hide: async function () {
-      this.visible = false;
-    },
-    show: async function () {
-      if(this.storeCodeValidate != "")
+    // show()
+    // {
+
+    // },
+    // hide()
+    // {
+    //   this.visible = false
+    // },
+
+    showBubble(){
+        if(this.storeCodeValidate != "")
       {
         this.warningText = this.storeCodeValidate
       }
-    },
-    showBubble(){
+      else this.warningText = "Trường này không được bỏ trống"
         this.visible1 = true
+  
     },
+
     hideBubble(){
         this.visible1 = false
     },
@@ -98,6 +105,7 @@ export default {
   width: 16px;
   margin-right: 5px;
   margin-top: 8px;
+  cursor: pointer;
 }
 
 .warning-icon:hover{

@@ -1,5 +1,5 @@
 <template>
-    <div  v-if="active">  
+    <div class="dialog-Customer" v-if="active">  
       <slot></slot>
     </div>
 </template>
