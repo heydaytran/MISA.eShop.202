@@ -56,4 +56,8 @@ export default {
     display: flex;
 }
 
+
+.right-content-grid .x-panel .x-grid-table #table-store{
+  height: 500px!important;
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <div class="hello">
+ <div>
       <BaseModal ref="BaseModal_ref">
+      <div class="dialog-Customer">
         <div class="header-dialog">
           <div class="header-title">{{ formTitle }}</div>
           <div class="btn-close" @click="hide"></div>
@@ -208,9 +208,11 @@
             </div>
           </div>
         </div>
+      </div>
+        
       </BaseModal>
-    </div>
-  </div>
+  
+ </div>
 </template>
 
 <script>
@@ -346,7 +348,6 @@ export default {
       switch(this.formMode){
         case 'add':
           {
-           
                 await axios.post("http://localhost:35480/api/v1/Stores/", this.store)
                 .then((respone) => {
                   if(text == 'addOne')
@@ -490,28 +491,45 @@ export default {
       storeCodeValidate: "Trường này không được bỏ trống",
       checkDup: true,
       //storeCodeFake: this.store.storeCode
+   
     };
   },
 
   watch: {
+     // theo dõi biến chọn quốc gia
     selectedCountry: async function () {
       if (this.selectedCountry != null) {
+        this.store.countryId = this.selectedCountry
         await this.getProvince();
       }
       if (this.formMode == "add") this.selectedCity = null;
         else this.selectedCity = this.store.provinceId;
     },
+
+ // theo dõi biến chọn tỉnh
     selectedCity: async function () {
       if(this.selectedCity != null){await this.getDistrict();
+       this.store.provinceId = this.selectedCity
       }
       if (this.formMode == "add") this.selectedDistrict = null;
       else this.selectedDistrict = this.store.districtId;
     },
+
+ // theo dõi biến chọn huyện
     selectedDistrict: async function () {
-     if(this.selectedDistrict){ await this.getWard();}
+     if(this.selectedDistrict!=null){ await this.getWard();
+      this.store.districtId = this.selectedDistrict}
       if (this.formMode == "add") this.selectedWard = null;
       else this.selectedWard = this.store.wardId;
     },
+
+    // theo dõi biến chọn xã
+    selectedWard: async function(){
+      if(this.selectedWard != null)
+      {
+        this.store.wardId  = this.selectedWard
+      }
+    }
   },
 };
 </script>

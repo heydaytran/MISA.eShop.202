@@ -27,14 +27,14 @@ export default {
   },
 
   methods: {
-    // show()
-    // {
+    show()
+    {
 
-    // },
-    // hide()
-    // {
-    //   this.visible = false
-    // },
+    },
+    hide()
+    {
+      this.visible = false
+    },
 
     showBubble(){
         if(this.storeCodeValidate != "")
