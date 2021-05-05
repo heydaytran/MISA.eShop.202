@@ -69,7 +69,6 @@
         </div>
         <div class="x-panel">
           <div class="x-grid-table">
-            
               <table cellpadding="0" cellspacing="0" id="table-store">
                 <thead>
                   <tr>

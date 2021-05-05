@@ -1,7 +1,7 @@
 <template>
   <transition name="component-fade" mode="out-in" >
-    <div class="warning-container" >
-      <div class="warning-icon"  @mouseover="showBubble" @mouseleave="hideBubble"></div>
+    <div class="warning-container"   >
+      <div class="warning-icon" @mouseover="showBubble" @mouseleave="hideBubble" ></div>
       <div class="warning-bubble" v-show="visible1">
         <div class="talktext">
           <p>{{ warningText }}</p>
@@ -22,7 +22,7 @@ export default {
       visible: false,
       debounce: null,
       visible1:false,
-      warningText: "Trường này không được bỏ trống",
+      warningText: "",
     };
   },
 
@@ -36,13 +36,38 @@ export default {
       this.visible = false
     },
 
-    showBubble(){
-        if(this.storeCodeValidate != "")
-      {
-        this.warningText = this.storeCodeValidate
-      }
-      else this.warningText = "Trường này không được bỏ trống"
+    showBubble(event){
+
+            // clientX/Y gives the coordinates relative to the viewport in CSS pixels.
+            console.log(event.clientX);
+            console.log(event.clientY);
+            var ele = document.getElementsByClassName("warning-icon")
+            var distanceX = ele[0].offsetParent.offsetParent.offsetLeft + ele[0].offsetParent.offsetLeft
+            var distanceY = ele[0].offsetParent.offsetParent.offsetTop + ele[0].offsetParent.offsetTop
+
+if(event.clientX >= distanceX && event.clientX <= distanceX + 24  && event.clientY >= distanceY+14 && event.clientY <= distanceY+35 && this.storeCodeValidate != "")
+{ 
+this.warningText = this.storeCodeValidate
+}
+ else this.warningText = "Trường này không được bỏ trống"
         this.visible1 = true
+
+
+
+
+      //       // pageX/Y gives the coordinates relative to the <html> element in CSS pixels.
+      //       console.log(event.pageX);
+      //       console.log(event.pageY);
+
+      //       // screenX/Y gives the coordinates relative to the screen in device pixels.
+      //       console.log(event.screenX);
+      //       console.log(event.screenY);
+
+      //   if( )
+      // {
+        
+      // }
+     
   
     },
 
@@ -66,6 +91,8 @@ export default {
   align-items: center;
   position: relative;
   margin-left: 5px;
+  cursor: pointer;
+
 }
 
 .warning-bubble {
@@ -105,7 +132,6 @@ export default {
   width: 16px;
   margin-right: 5px;
   margin-top: 8px;
-  cursor: pointer;
 }
 
 .warning-icon:hover{

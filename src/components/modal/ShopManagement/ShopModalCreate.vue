@@ -431,7 +431,7 @@ export default {
         if (validateForm === false) {
           requiredInput[0].classList.add("boderRed");
          // res.storeCodeFake = "";
-         this.storeCodeValidate = "Mã cửa hàng bị trùng"
+           this.storeCodeValidate = "Mã cửa hàng bị trùng"
           requiredInput[0].parentElement.nextSibling.classList.remove("hidden");
         }
       }
@@ -540,3 +540,7 @@ export default {
   opacity: 0;
 }
 </style>
+
+
+
+

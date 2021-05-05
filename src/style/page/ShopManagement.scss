@@ -825,38 +825,41 @@ table td {
     width: 100%;
     /* background-color: rebeccapurple; */
     height: calc(100% - 36px);
-    overflow: scroll;
-    margin-top: 52px;
+    overflow: auto;
 }
 
-table thead tr th .x-column-header{
-    position: absolute;
-    top: -52px;
-}
+table thead tr th .x-column-header {}
 
-table thead tr th  .column-storeid, table thead tr .th-storeid
-{
+table thead tr th .column-storeid,
+table thead tr .th-storeid {
     min-width: 190px;
-    width: 190px;
+    width: 10%;
 }
 
-table thead tr th  .column-storename{
-    min-width: 260px;
+table thead tr th .column-storename {
+    min-width: 421px;
+    width: 25%;
 }
 
-table thead tr th  .column-storeaddress,  table thead tr .th-storeaddress{
-min-width: 410px;
-width: 410px;
+table thead tr th .column-storeaddress,
+table thead tr .th-storeaddress {
+    min-width: 607px;
+    width: 35%;
 }
 
-table thead tr th  .column-storenumber, table thead tr .th-storenumber{
-min-width: 145px;
-width: 145px;
+table thead tr th .column-storenumber,
+table thead tr .th-storenumber {
+    min-width: 347px;
+    width: 20%;
 }
 
-table thead tr th  .column-storestatus{
+table thead tr th .column-storestatus {
     min-width: 170px;
+    width: 14%;
 }
 
-
-
+table thead tr th {
+    position: sticky;
+    top: 0;
+    background: #fff;
+}
