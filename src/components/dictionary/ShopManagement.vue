@@ -56,109 +56,111 @@
             ></span>
             <div class="r-button boder-right">Xóa</div>
           </div>
-          <div class="button-remote" style="display: flex" @click="reLoad()">
-            <span
-              data-ref="btnIconEl"
-              role="presentation"
-              unselectable="on"
-              class="x-btn-icon icon-refresh"
-              style=""
-            ></span>
-            <div class="r-button">Nạp</div>
-          </div>
+          <a href="" style="height: 36px">
+            <div class="button-remote" style="display: flex" @click="reLoad()">
+              <span
+                data-ref="btnIconEl"
+                role="presentation"
+                unselectable="on"
+                class="x-btn-icon icon-refresh"
+                style=""
+              ></span>
+              <div class="r-button">Nạp</div>
+            </div>
+          </a>
         </div>
         <div class="x-panel">
           <div class="x-grid-table">
-              <table cellpadding="0" cellspacing="0" id="table-store">
-                <thead>
-                  <tr>
-                    <th class="th-storeid">
-                      <div class="x-column-header column-storeid">
-                        <div class="x-column-header-inner">
-                          <div class="x-fontw column-name">Mã cửa hàng</div>
-                        </div>
-                        <div class="x-column-header-condition">
-                          <a href="" class="condition-btn"></a>
-                          <div class="condition-text"></div>
-                        </div>
+            <table cellpadding="0" cellspacing="0" id="table-store">
+              <thead>
+                <tr>
+                  <th class="th-storeid">
+                    <div class="x-column-header column-storeid">
+                      <div class="x-column-header-inner">
+                        <div class="x-fontw column-name">Mã cửa hàng</div>
                       </div>
-                    </th>
-                    <th class="th-storename">
-                      <div class="x-column-header column-storename">
-                        <div class="x-column-header-inner">
-                          <div class="x-fontw column-name">Tên cửa hàng</div>
-                        </div>
-                        <div class="x-column-header-condition">
-                          <a href="" class="condition-btn"></a>
-                          <div class="condition-text"></div>
-                        </div>
+                      <div class="x-column-header-condition">
+                        <a href="" class="condition-btn"></a>
+                        <input type="text" class="condition-text condition-storeCode" v-model="filter.filterStoreCode" @change="getdata()"/>
                       </div>
-                    </th>
-                    <th class="th-storeaddress">
-                      <div class="x-column-header column-storeaddress">
-                        <div class="x-column-header-inner">
-                          <div class="x-fontw column-name">Địa chỉ</div>
-                        </div>
-                        <div class="x-column-header-condition">
-                          <a href="" class="condition-btn"></a>
-                          <div class="condition-text"></div>
-                        </div>
+                    </div>
+                  </th>
+                  <th class="th-storename">
+                    <div class="x-column-header column-storename">
+                      <div class="x-column-header-inner">
+                        <div class="x-fontw column-name">Tên cửa hàng</div>
                       </div>
-                    </th>
-                    <th class="th-storenumber">
-                      <div class="x-column-header column-storenumber">
-                        <div class="x-column-header-inner">
-                          <div class="x-fontw column-name">Số điện thoại</div>
-                        </div>
-                        <div class="x-column-header-condition">
-                          <a href="" class="condition-btn"></a>
-                          <div class="condition-text"></div>
-                        </div>
+                      <div class="x-column-header-condition">
+                        <a href="" class="condition-btn"></a>
+                        <input type="text" class="condition-text codition-storeName" v-model="filter.filterStoreName" @change="getdata()"/>
                       </div>
-                    </th>
-                    <th class="th-storestatus">
-                      <div class="x-column-header column-storestatus">
-                        <div class="x-column-header-inner">
-                          <div class="x-fontw column-name">Trạng thái</div>
-                        </div>
-                        <div class="x-column-header-condition">
-                          <div
-                            class="condition-text"
-                            style="margin-left: 2px"
-                          ></div>
-                        </div>
+                    </div>
+                  </th>
+                  <th class="th-storeaddress">
+                    <div class="x-column-header column-storeaddress">
+                      <div class="x-column-header-inner">
+                        <div class="x-fontw column-name">Địa chỉ</div>
                       </div>
-                    </th>
-                  </tr>
-                </thead>
-                <div v-show="!isLoaded" class="loading">
-                  <div class="loader"></div>
-                  <div class="text">Đang nạp dữ liệu</div>
-                </div>
+                      <div class="x-column-header-condition">
+                        <a href="" class="condition-btn"></a>
+                        <input type="text" class="condition-text condition-address" v-model="filter.filterStoreAddress" @change="getdata()"/>
+                      </div>
+                    </div>
+                  </th>
+                  <th class="th-storenumber">
+                    <div class="x-column-header column-storenumber">
+                      <div class="x-column-header-inner">
+                        <div class="x-fontw column-name">Số điện thoại</div>
+                      </div>
+                      <div class="x-column-header-condition">
+                        <a href="" class="condition-btn"></a>
+                        <input type="text" class="condition-text condition-phone" v-model="filter.filterStorePhoneNumber" @change="getdata()"/>
+                      </div>
+                    </div>
+                  </th>
+                  <th class="th-storestatus">
+                    <div class="x-column-header column-storestatus">
+                      <div class="x-column-header-inner">
+                        <div class="x-fontw column-name">Trạng thái</div>
+                      </div>
+                      <div class="x-column-header-condition">
+                        <input
+                          type="text"
+                          style="margin-left: 2px"
+                          class="condition-text"
+                          v-model="filter.filterStoreStatus"
+                          @change="getdata()"
+                        />
+                      </div>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <div v-show="!isLoaded" class="loading">
+                <div class="loader"></div>
+                <div class="text">Đang nạp dữ liệu</div>
+              </div>
 
-                <!-- <div  class="not-find">
+              <!-- <div  class="not-find">
                   <i class="notify">Không tìm thấy kết quả</i>
                 </div> -->
 
-                <tbody>
-                  <tr
-                    v-for="shop in stores"
-                    :key="shop.storeId"
-                    @dblclick="showDetail(shop)"
-                    @click="selectRow(shop.storeId)"
-                    v-bind:class="
-                      selectedRow(shop.storeId) ? 'selected-row' : ''
-                    "
-                  >
-                    <td>{{ shop.storeCode }}</td>
-                    <td>{{ shop.storeName }}</td>
-                    <td>{{ shop.address }}</td>
-                    <td>{{ shop.phoneNumber }}</td>
-                    <td>đang hoạt động</td>
-                  </tr>
-                </tbody>
-              </table>
-            
+              <tbody>
+                <tr
+                  v-for="shop in stores"
+                  :key="shop.storeId"
+                  @dblclick="showDetail(shop)"
+                  @click="selectRow(shop.storeId)"
+                  v-bind:class="selectedRow(shop.storeId) ? 'selected-row' : ''"
+                >
+                  <td>{{ shop.storeCode }}</td>
+                  <td>{{ shop.storeName }}</td>
+                  <td>{{ shop.address }}</td>
+                  <td>{{ shop.phoneNumber }}</td>
+                  <td>đang hoạt động</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           <div class="x-grid-footer toolbar">
             <div class="paging-toolbar">
@@ -210,10 +212,22 @@ export default {
   },
   methods: {
     // lấy dữ liệu các bản ghi shop
+    // async getdata() {
+    //   await axios
+    //     .get("http://localhost:35480/api/v1/Stores")
+    //     .then((Response) => {
+    //       this.stores = Response.data.data;
+    //       this.isLoaded = true;
+    //     });
+    // },
+
     async getdata() {
-      await axios
-        .get("http://localhost:35480/api/v1/Stores")
-        .then((Response) => {
+      await axios.get("http://localhost:35480/api/v1/Stores/Filter?storeName="+this.filter.filterStoreName
+      +"&storeCode="+this.filter.filterStoreCode
+      +"&address="+this.filter.filterStoreAddress
+      +"&phoneNumber="+this.filter.filterStorePhoneNumber
+      +"&status="+this.filter.filterStoreStatus)
+      .then((Response) => {
           this.stores = Response.data.data;
           this.isLoaded = true;
         });
@@ -221,8 +235,9 @@ export default {
 
     // hiển thị chi tiết bản ghi trên modal
     showDetail: async function (shop) {
-      // this.store = shop;
+      //this.store = shop;
       this.store = Object.assign({}, shop);
+
       // console.log(this.store, "a");
       // await ((this.store.storeCode = shop.storeCode),
       // (this.store.storeName = shop.storeName),
@@ -297,6 +312,7 @@ export default {
       }
     },
   },
+
   data() {
     return {
       stores: [],
@@ -318,6 +334,14 @@ export default {
       formMode: "add",
       listSelectRow: [],
       isLoaded: false,
+      filter:{
+        filterStoreName:"",
+        filterStoreCode:"",
+        filterStoreAddress:"",
+        filterStoreStatus:0,
+        filterStorePhoneNumber:""
+      }
+
     };
   },
   created() {
@@ -453,6 +477,4 @@ export default {
       -2.6em 0em 0 0em rgba(255, 255, 255, 0.7), -1.8em -1.8em 0 0em #ffffff;
   }
 }
-
-
 </style>
