@@ -337,7 +337,7 @@ export default {
     },
 
     async save(text) {
-
+      debugger  // eslint-disable-line no-debugger
       var res = this
       var vali = await res.validateForm()
       if(vali == false){
@@ -409,6 +409,7 @@ export default {
 
     //validate toàn bộ form nhập khi ấn lưu
     async validateForm() {
+      debugger  // eslint-disable-line no-debugger
       var res = this;
       var requiredInput = document.getElementsByClassName("required");
       var validateForm = true;
